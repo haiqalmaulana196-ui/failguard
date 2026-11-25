@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FallGuard – Prototype Aplikasi</title>
+<meta name="theme-color" content="#0B3C49">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0B2F3A;--deep:#0E4F5C;--aqua:#22B5A5;--mint:#D9F2EC;--sky:#EEF6F7;--amber:#F2A93B;--red:#E5484D;--mute:#6B8791;--line:#DCE8EA;--page:#CFE3E6;--pagetxt:#0B2F3A;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--page:#06181d;--pagetxt:#cfe3e6}}
+:root[data-theme="dark"]{--page:#06181d;--pagetxt:#cfe3e6}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+*{box-sizing:border-box}
+body{margin:0;height:100%;background:var(--page);color:var(--pagetxt);font-family:'Plus Jakarta Sans',system-ui,sans-serif;display:grid;place-items:center}
+.wrap{display:flex;align-items:center;justify-content:center;gap:48px;width:100%;height:100%;padding:12px}
+.side{max-width:280px;display:none}
+.side h2{font-family:'Bricolage Grotesque',sans-serif;font-size:30px;margin:0 0 10px;line-height:1.1}
+.side p{font-size:14px;line-height:1.6;margin:0 0 8px;opacity:.85}
+@media(min-width:900px){.side{display:block}}
+.phone{position:relative;width:min(396px,100%);height:min(820px,100%);background:var(--sky);color:var(--ink);border-radius:36px;overflow:hidden;box-shadow:0 30px 70px rgba(6,40,50,.35),0 0 0 9px #0B2F3A;display:flex;flex-direction:column}
+@media(max-width:480px){.wrap{padding:0}.phone{border-radius:0;box-shadow:none;width:100%;height:100%}}
+.scr{display:none;flex:1;min-height:0;flex-direction:column}
+.scr.on{display:flex}
+h1,h2,h3{font-family:'Bricolage Grotesque',sans-serif;margin:0}
+button{font:inherit;cursor:pointer;border:0}
+button:focus-visible,input:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+/* login */
+.hero{background:linear-gradient(160deg,#0B3C49 0%,#0E6270 70%,#14877F 100%);color:#fff;padding:54px 28px 70px;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;border:2px solid rgba(255,255,255,.14);box-shadow:0 0 0 28px rgba(255,255,255,.05),0 0 0 58px rgba(255,255,255,.03)}
+.logo{display:flex;align-items:center;gap:10px;margin-bottom:26px;position:relative;z-index:1}
+.logo b{font-family:'Bricolage Grotesque';font-size:24px;font-weight:800;letter-spacing:-.5px}
+.hero h1{font-size:30px;line-height:1.1;font-weight:800;max-width:260px;position:relative;z-index:1}
+.hero p{margin:12px 0 0;font-size:13.5px;line-height:1.55;opacity:.85;max-width:270px;position:relative;z-index:1}
+.form{background:var(--sky);margin-top:-30px;border-radius:28px 28px 0 0;padding:26px 26px 20px;flex:1;overflow:auto;position:relative}
+.tabs2{display:flex;background:#fff;border-radius:14px;padding:4px;margin-bottom:18px}
+.tabs2 button{flex:1;padding:9px;border-radius:11px;background:none;color:var(--mute);font-weight:600;font-size:14px}
+.tabs2 button.on{background:var(--deep);color:#fff}
+label{display:block;font-size:12.5px;font-weight:600;margin:12px 0 6px}
+.field{position:relative}
+.field input{width:100%;padding:13px 14px;border-radius:14px;border:1.5px solid var(--line);background:#fff;font:inherit;font-size:14.5px;color:var(--ink)}
+.field input:focus{border-color:var(--aqua)}
+.field input.bad{border-color:var(--red)}
+.eye{position:absolute;right:6px;top:6px;background:none;color:var(--mute);padding:8px;font-size:12px;font-weight:600}
+.err{color:var(--red);font-size:12px;margin-top:6px;min-height:16px}
+.btn{width:100%;padding:14px;border-radius:16px;background:var(--aqua);color:#04302B;font-weight:700;font-size:15px;margin-top:8px;transition:transform .15s,background .15s}
+.btn:active{transform:scale(.98)}
+.btn.ghost{background:transparent;color:var(--deep);border:1.5px solid var(--deep);margin-top:10px}
+.hint{font-size:12px;color:var(--mute);text-align:center;margin-top:14px;line-height:1.5}
+/* app */
+.top{display:flex;align-items:center;justify-content:space-between;padding:22px 22px 8px}
+.top small{color:var(--mute);font-size:12.5px;display:block}
+.top h2{font-size:22px;font-weight:800}
+.av{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--aqua),var(--deep));color:#fff;display:grid;place-items:center;font-weight:700;font-size:15px}
+.body{flex:1;overflow:auto;padding:8px 18px 18px}
+.card{background:#fff;border-radius:22px;padding:16px;margin-bottom:14px;border:1px solid var(--line)}
+.status{background:linear-gradient(150deg,#0B3C49,#0E6270);color:#fff;border:0;display:flex;gap:14px;align-items:center}
+.status.warn{background:linear-gradient(150deg,#7a4a0b,#c9821c)}
+.ring{width:96px;height:96px;flex:none;position:relative}
+.ring svg{transform:rotate(-90deg)}
+.ring div{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font-family:'Bricolage Grotesque';font-size:26px;font-weight:800;line-height:1}
+.ring small{display:block;font:500 10px 'Plus Jakarta Sans';opacity:.75;margin-top:2px}
+.status h3{font-size:18px}
+.status p{margin:4px 0 0;font-size:12.5px;opacity:.8;line-height:1.45}
+.pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.16);border-radius:99px;padding:4px 10px;font-size:11.5px;font-weight:600;margin-bottom:8px}
+.dot{width:8px;height:8px;border-radius:50%;background:#5CF2C4;box-shadow:0 0 0 0 rgba(92,242,196,.7);animation:pl 2s infinite}
+@keyframes pl{70%{box-shadow:0 0 0 8px rgba(92,242,196,0)}100%{box-shadow:0 0 0 0 rgba(92,242,196,0)}}
+.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+.mini{background:#fff;border:1px solid var(--line);border-radius:18px;padding:12px}
+.mini small{color:var(--mute);font-size:11px;display:block}
+.mini b{font-family:'Bricolage Grotesque';font-size:22px;display:block;margin-top:4px}
+.mini span{font-size:11px;color:var(--mute)}
+.ch h3{font-size:15px;margin-bottom:2px}
+.ch small{color:var(--mute);font-size:11.5px}
+.ch svg{width:100%;height:80px;margin-top:8px;display:block}
+.sos{display:flex;gap:10px}
+.sos button{flex:1;padding:14px 10px;border-radius:16px;font-weight:700;font-size:13.5px}
+.b1{background:#FDE3E4;color:#9d1c21}.b2{background:var(--mint);color:#0b5a50}
+.nav{display:flex;background:#fff;border-top:1px solid var(--line);padding:8px 10px 12px}
+.nav button{flex:1;background:none;color:var(--mute);display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:600;padding:6px;border-radius:12px}
+.nav button.on{color:var(--deep);background:var(--mint)}
+/* activity */
+.tl{position:relative;padding-left:22px}
+.tl:before{content:"";position:absolute;left:6px;top:6px;bottom:6px;width:2px;background:var(--line)}
+.ev{position:relative;background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:10px}
+.ev:before{content:"";position:absolute;left:-21px;top:16px;width:12px;height:12px;border-radius:50%;background:var(--aqua);border:3px solid var(--sky)}
+.ev.warn:before{background:var(--amber)}.ev.fall:before{background:var(--red)}
+.ev b{font-size:13.5px;display:block}.ev span{font-size:12px;color:var(--mute);line-height:1.45;display:block;margin-top:2px}.ev i{font-style:normal;font-size:11px;color:var(--deep);font-weight:600}
+.bars{display:flex;align-items:flex-end;gap:8px;height:90px;margin-top:12px}
+.bars div{flex:1;text-align:center;font-size:10.5px;color:var(--mute)}
+.bars em{display:block;border-radius:8px 8px 4px 4px;background:var(--mint);margin-bottom:4px;transition:height .5s}
+.bars em.hi{background:var(--aqua)}
+/* profile */
+.pf{text-align:center;padding:6px 0 14px}
+.pf .av{width:84px;height:84px;font-size:28px;margin:0 auto 10px}
+.pf h3{font-size:20px}.pf small{color:var(--mute);font-size:13px}
+.row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line);font-size:13.5px;gap:10px}
+.row:last-child{border:0}.row small{display:block;color:var(--mute);font-size:11.5px;margin-top:2px}
+.sw{width:46px;height:27px;border-radius:99px;background:#C3D3D6;position:relative;flex:none;transition:background .2s}
+.sw:after{content:"";position:absolute;left:3px;top:3px;width:21px;height:21px;border-radius:50%;background:#fff;transition:transform .2s}
+.sw.on{background:var(--aqua)}.sw.on:after{transform:translateX(19px)}
+input[type=range]{width:100%;accent-color:var(--aqua);margin-top:8px}
+.ct{display:flex;align-items:center;gap:10px}.ct .av{width:36px;height:36px;font-size:13px}
+/* alert */
+.alert{position:absolute;inset:0;background:linear-gradient(170deg,#B3202A,#E5484D 60%,#F27B5B);color:#fff;z-index:20;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px}
+.alert.on{display:flex}
+.pulse{width:170px;height:170px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.18);animation:pu 1.2s infinite;margin-bottom:22px}
+@keyframes pu{0%{box-shadow:0 0 0 0 rgba(255,255,255,.5)}100%{box-shadow:0 0 0 46px rgba(255,255,255,0)}}
+.pulse b{font-family:'Bricolage Grotesque';font-size:76px;font-weight:800}
+.alert h2{font-size:28px;font-weight:800}.alert p{opacity:.9;font-size:14px;line-height:1.55;margin:8px 0 26px;max-width:270px}
+.alert .btn{background:#fff;color:#9d1c21;max-width:300px}.alert .btn.ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.7)}
+.toast{position:absolute;left:50%;bottom:86px;transform:translate(-50%,20px);background:var(--ink);color:#fff;padding:10px 16px;border-radius:99px;font-size:12.5px;font-weight:600;opacity:0;pointer-events:none;transition:.3s;z-index:30;white-space:nowrap}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.sec{font-size:13px;font-weight:700;margin:4px 4px 10px;color:var(--deep)}
+.map{height:118px;border-radius:14px;overflow:hidden;margin-top:10px;background:#E4F0F1}.map svg{width:100%;height:100%;display:block}
+.pin{animation:pu 1.6s infinite;border-radius:50%}
+.med{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);width:100%;background:none;text-align:left;color:var(--ink);font-size:13.5px}
+.med:last-child{border:0}.med small{display:block;color:var(--mute);font-size:11.5px;margin-top:2px}
+.med .bx{width:24px;height:24px;border-radius:8px;border:2px solid var(--line);display:grid;place-items:center;flex:none;color:transparent;font-size:14px;font-weight:700;transition:.2s}
+.med.done .bx{background:var(--aqua);border-color:var(--aqua);color:#fff}.med.done b{text-decoration:line-through;opacity:.55}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 12px}.chip{background:var(--mint);color:#0b5a50;border-radius:99px;padding:8px 12px;font-size:12px;font-weight:600}
+.cnote{font-size:11.5px;color:var(--mute);margin:2px 2px 10px}
+.bub{max-width:82%;background:#fff;border:1px solid var(--line);border-radius:18px 18px 18px 6px;padding:10px 13px;font-size:13.5px;line-height:1.5;margin-bottom:8px}
+.bub.me{margin-left:auto;background:var(--deep);color:#fff;border-color:var(--deep);border-radius:18px 18px 6px 18px}
+.cin{position:sticky;bottom:0;display:flex;gap:8px;padding-top:8px;background:var(--sky)}
+.cin input{flex:1;min-width:0;padding:12px 14px;border-radius:99px;border:1.5px solid var(--line);background:#fff;font:inherit;font-size:14px;color:var(--ink)}
+.cb{background:var(--aqua);color:#04302B;border-radius:99px;padding:0 18px;font-weight:700}
+.phone.dk{--sky:#0A1F26;--ink:#E6F2F4;--line:#1D3A44;--mute:#8FB0B8;--mint:#12403F}
+.phone.dk .card:not(.status),.phone.dk .mini,.phone.dk .ev,.phone.dk .nav,.phone.dk .tabs2,.phone.dk .field input,.phone.dk .bub:not(.me),.phone.dk .cin input{background:#10303A}
+.phone.dk .btn.ghost,.phone.dk .sec,.phone.dk .ev i,.phone.dk .nav button.on{color:#7FD8CC;border-color:#7FD8CC}
+.phone.dk .chip,.phone.dk .b2{color:#BFEFE7}.phone.dk .b1{background:#4A1E22;color:#FFB4B7}
+.phone.dk .map{filter:brightness(.7)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="side">
+    <h2>FallGuard</h2>
+    <p>Prototype aplikasi pemantau jatuh untuk lansia. Sensor pada perangkat pakai mendeteksi gerakan, lalu keluarga dan perawat menerima peringatan secara langsung.</p>
+    <p>Coba: masuk dengan akun demo, tekan “Simulasikan jatuh” di Beranda, lalu buka tab Aktivitas dan Profil.</p>
+  </div>
+
+  <div class="phone" id="phone">
+    <!-- LOGIN -->
+    <section class="scr on" id="login">
+      <div class="hero">
+        <div class="logo">
+          <svg width="34" height="34" viewBox="0 0 34 34" fill="none"><path d="M17 3l11 4v9c0 7-5 12-11 15C11 28 6 23 6 16V7l11-4z" fill="#22B5A5"/><circle cx="17" cy="12" r="2.6" fill="#fff"/><path d="M17 15.5v5m0 0l-3 4m3-4l3 4M13 18h8" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+          <b>FallGuard</b>
+        </div>
+        <h1>Jatuh terdeteksi dalam hitungan detik.</h1>
+        <p>Keluarga dan perawat langsung tahu, sebelum terlambat.</p>
+      </div>
+      <div class="form">
+        <div class="tabs2" role="tablist">
+          <button class="on" id="tIn" role="tab">Masuk</button>
+          <button id="tUp" role="tab">Daftar</button>
+        </div>
+        <div id="nameBox" style="display:none"><label for="nm">Nama lengkap</label><div class="field"><input id="nm" placeholder="Nama Anda" autocomplete="name"></div></div>
+        <label for="em">Email</label>
+        <div class="field"><input id="em" type="email" placeholder="nama@email.com" autocomplete="email"></div>
+        <label for="pw">Kata sandi</label>
+        <div class="field"><input id="pw" type="password" placeholder="Minimal 6 karakter" autocomplete="current-password"><button class="eye" id="eye" type="button">Lihat</button></div>
+        <div class="err" id="err"></div>
+        <button class="btn" id="go">Masuk</button>
+        <button class="btn ghost" id="demo">Pakai akun demo</button>
+        <button class="btn ghost" id="inst" style="display:none">Pasang di Android</button>
+        <p class="hint">Prototype untuk tugas akhir. Data yang tampil adalah simulasi.</p>
+      </div>
+    </section>
+
+    <!-- APP -->
+    <section class="scr" id="app">
+      <div class="top"><div><small id="hi">Selamat pagi</small><h2 id="who">Rina</h2></div><div class="av" id="av1">RP</div></div>
+      <div class="body" id="pHome"></div>
+      <div class="body" id="pAct" style="display:none"></div>
+      <div class="body" id="pChat" style="display:none"></div>
+      <div class="body" id="pProf" style="display:none"></div>
+      <nav class="nav">
+        <button data-t="pHome" class="on"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/></svg>Beranda</button>
+        <button data-t="pAct"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>Aktivitas</button>
+        <button data-t="pChat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 01-11.6 7.1L4 20l1-4.6A8 8 0 1121 12z"/></svg>Chat</button>
+        <button data-t="pProf"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Profil</button>
+      </nav>
+    </section>
+
+    <div class="alert" id="alert" role="alertdialog" aria-live="assertive">
+      <div class="pulse"><b id="cd">10</b></div>
+      <h2>Jatuh terdeteksi</h2>
+      <p>Opa Hendra terdeteksi jatuh di ruang tengah. Bantuan dikirim otomatis saat hitung mundur selesai.</p>
+      <button class="btn" id="okBtn">Dia baik-baik saja</button>
+      <button class="btn ghost" id="sendBtn">Kirim bantuan sekarang</button>
+    </div>
+    <div class="toast" id="toast"></div>
+  </div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+const S={user:{name:'Rina Pratama',email:'demo@fallguard.id',phone:'0812-3456-7890'},auto:true,notif:true,sens:60,hr:78,steps:2184,status:'ok',pts:Array.from({length:40},()=>.5),spike:0,
+events:[
+{k:'ok',t:'Hari ini, 07:42',b:'Aktivitas normal',d:'Berjalan ke dapur, 126 langkah.'},
+{k:'warn',t:'Kemarin, 19:15',b:'Langkah tidak stabil',d:'Ayunan tubuh meningkat 18% saat berdiri dari kursi.'},
+{k:'fall',t:'Selasa, 03:20',b:'Jatuh terdeteksi',d:'Alarm dibatalkan, Opa Hendra baik-baik saja.'},
+{k:'ok',t:'Senin, 14:05',b:'Latihan keseimbangan',d:'Sesi 10 menit selesai tanpa peringatan.'}],
+week:[2,1,3,1,0,2,1],meds:[true,false,false],dark:false,chat:[{me:0,t:'Halo, saya Ns. Sari. Ada yang bisa saya bantu soal kondisi Opa Hendra?'}],contacts:[['Dr. Sari Wulandari','Dokter keluarga'],['Budi Pratama','Anak laki-laki']]};
+const ini=n=>n.split(' ').filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join('');
+let mode='in',timer=null,cdT=null,cdN=10;
+
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('on'),2400)}
+
+/* login */
+function setMode(m){mode=m;$('#tIn').classList.toggle('on',m==='in');$('#tUp').classList.toggle('on',m==='up');$('#nameBox').style.display=m==='up'?'block':'none';$('#go').textContent=m==='in'?'Masuk':'Buat akun';$('#err').textContent=''}
+$('#tIn').onclick=()=>setMode('in');$('#tUp').onclick=()=>setMode('up');
+$('#eye').onclick=()=>{const p=$('#pw');const s=p.type==='password';p.type=s?'text':'password';$('#eye').textContent=s?'Sembunyikan':'Lihat'};
+$('#demo').onclick=()=>{$('#em').value='demo@fallguard.id';$('#pw').value='fallguard123';enter()};
+$('#go').onclick=enter;
+['em','pw','nm'].forEach(i=>$('#'+i).addEventListener('keydown',e=>{if(e.key==='Enter')enter()}));
+function enter(){
+  const em=$('#em').value.trim(),pw=$('#pw').value,nm=$('#nm').value.trim();
+  ['em','pw','nm'].forEach(i=>$('#'+i).classList.remove('bad'));
+  let e='';
+  if(mode==='up'&&nm.length<2){e='Isi nama lengkap Anda.';$('#nm').classList.add('bad')}
+  else if(!/^\S+@\S+\.\S+$/.test(em)){e='Format email belum benar, contoh: nama@email.com.';$('#em').classList.add('bad')}
+  else if(pw.length<6){e='Kata sandi minimal 6 karakter.';$('#pw').classList.add('bad')}
+  $('#err').textContent=e;if(e)return;
+  S.user.email=em;
+  if(mode==='up')S.user.name=nm;else if(em!=='demo@fallguard.id')S.user.name=em.split('@')[0].replace(/[._]/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+  $('#login').classList.remove('on');$('#app').classList.add('on');
+  buildAll();start();toast('Selamat datang, '+S.user.name.split(' ')[0]);
+}
+
+/* nav */
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('on',x===b));
+  ['pHome','pAct','pChat','pProf'].forEach(p=>$('#'+p).style.display=p===b.dataset.t?'block':'none');
+});
+
+function buildAll(){
+  const h=new Date().getHours();
+  $('#hi').textContent=h<11?'Selamat pagi':h<15?'Selamat siang':h<19?'Selamat sore':'Selamat malam';
+  $('#who').textContent=S.user.name.split(' ')[0];$('#av1').textContent=ini(S.user.name);
+  home();act();chat();prof();
+}
+
+function ringSvg(v){const c=2*Math.PI*40,col=v>50?'#F2A93B':'#5CF2C4';return `<svg width="96" height="96"><circle cx="48" cy="48" r="40" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="9"/><circle cx="48" cy="48" r="40" fill="none" stroke="${col}" stroke-width="9" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-v/100)}"/></svg>`}
+
+function home(){
+  const warn=S.status==='warn',risk=warn?64:23;
+  $('#pHome').innerHTML=`
+  <div class="card status ${warn?'warn':''}">
+    <div class="ring">${ringSvg(risk)}<div><span>${risk}<small>risiko</small></span></div></div>
+    <div><span class="pill"><i class="dot"></i>Terhubung langsung</span>
+    <h3>${warn?'Perlu dicek':'Opa Hendra aman'}</h3>
+    <p>${warn?'Insiden terakhir baru saja tercatat. Pastikan kondisi beliau.':'Gelang FallGuard aktif. Tidak ada gerakan berbahaya hari ini.'}</p></div>
+  </div>
+  <div class="grid">
+    <div class="mini"><small>Detak jantung</small><b id="hr">${S.hr}</b><span>bpm</span></div>
+    <div class="mini"><small>Langkah</small><b id="st">${S.steps.toLocaleString('id-ID')}</b><span>hari ini</span></div>
+    <div class="mini"><small>Baterai</small><b>82%</b><span>gelang</span></div>
+  </div>
+  <div class="card ch"><h3>Sensor gerak</h3><small>Akselerometer, diperbarui tiap detik</small>
+    <svg viewBox="0 0 300 70" preserveAspectRatio="none"><defs><linearGradient id="g" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#22B5A5" stop-opacity=".35"/><stop offset="1" stop-color="#22B5A5" stop-opacity="0"/></linearGradient></defs><path id="area" fill="url(#g)"/><polyline id="line" fill="none" stroke="#0E6270" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></svg></div>
+  <div class="card"><h3 style="font-size:15px">Lokasi Opa Hendra</h3><small style="color:var(--mute);font-size:11.5px">Ruang tengah, di rumah. Diperbarui 5 detik lalu</small>
+    <div class="map"><svg viewBox="0 0 300 118" preserveAspectRatio="xMidYMid slice"><path d="M0 40H300M0 88H300M70 0V118M200 0V118" stroke="#fff" stroke-width="9"/><path d="M0 64L300 52" stroke="#fff" stroke-width="5"/><rect x="92" y="46" width="90" height="34" rx="8" fill="#C9E5DF"/><rect x="214" y="8" width="70" height="26" rx="8" fill="#CFE0E6"/><rect x="8" y="96" width="50" height="18" rx="6" fill="#CFE0E6"/><circle class="pin" cx="137" cy="63" r="9" fill="#22B5A5" opacity=".35"/><circle cx="137" cy="63" r="6" fill="#0E4F5C" stroke="#fff" stroke-width="2"/></svg></div></div>
+  <div class="card"><h3 style="font-size:15px;margin-bottom:4px">Pengingat obat</h3>
+    ${[['Amlodipine 5 mg','08:00'],['Vitamin D3','12:00'],['Kalsium 500 mg','19:00']].map((m,i)=>`<button class="med ${S.meds[i]?'done':''}" data-i="${i}"><span class="bx">✓</span><span><b>${m[0]}</b><small>${m[1]} · ${S.meds[i]?'Sudah diminum':'Belum diminum'}</small></span></button>`).join('')}</div>
+  <div class="sos"><button class="b1" id="sim">Simulasikan jatuh</button><button class="b2" id="call">Hubungi Opa</button></div>`;
+  $('#sim').onclick=()=>{S.spike=9;toast('Sensor mendeteksi benturan...');setTimeout(openAlert,1500)};
+  $('#call').onclick=()=>toast('Memanggil Opa Hendra...');
+  document.querySelectorAll('.med').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;S.meds[i]=!S.meds[i];b.classList.toggle('done',S.meds[i]);b.querySelector('small').textContent=b.querySelector('small').textContent.split(' · ')[0]+' · '+(S.meds[i]?'Sudah diminum':'Belum diminum');toast(S.meds[i]?'Obat dicatat diminum':'Catatan dibatalkan')});
+  draw();
+}
+function draw(){
+  const l=$('#line');if(!l)return;
+  const pts=S.pts.map((v,i)=>`${(i*300/39).toFixed(1)},${(62-v*56).toFixed(1)}`);
+  l.setAttribute('points',pts.join(' '));$('#area').setAttribute('d','M'+pts.join(' L')+' L300,70 L0,70Z');
+}
+function start(){clearInterval(timer);timer=setInterval(()=>{
+  let v=.45+Math.random()*.12;if(S.spike>0){v=S.spike>6?.95:.05+Math.random()*.1;S.spike--}
+  S.pts.push(v);S.pts.shift();
+  S.hr=Math.max(66,Math.min(S.spike>0||$('#alert').classList.contains('on')?116:88,S.hr+Math.round((Math.random()-.5)*4)));
+  if($('#alert').classList.contains('on'))S.hr=Math.max(S.hr,108);
+  if(Math.random()<.3)S.steps+=Math.round(Math.random()*4);
+  const a=$('#hr'),b=$('#st');if(a){a.textContent=S.hr;b.textContent=S.steps.toLocaleString('id-ID')}
+  draw();
+},900)}
+
+/* alert */
+function openAlert(){try{navigator.vibrate&&navigator.vibrate([400,200,400,200,400])}catch(e){}cdN=10;$('#cd').textContent=cdN;$('#alert').classList.add('on');clearInterval(cdT);
+  cdT=setInterval(()=>{cdN--;$('#cd').textContent=cdN;if(cdN<=0)send(true)},1000)}
+function closeAlert(){clearInterval(cdT);$('#alert').classList.remove('on')}
+function addEv(k,b,d){S.events.unshift({k,t:'Baru saja',b,d});if(k==='fall')S.week[6]++;S.status=k==='fall'?'warn':S.status;act();home()}
+$('#okBtn').onclick=()=>{closeAlert();addEv('fall','Alarm dibatalkan','Opa Hendra menyatakan baik-baik saja. Dicatat sebagai kejadian jatuh ringan.');toast('Alarm dibatalkan')};
+$('#sendBtn').onclick=()=>send(false);
+function send(auto){closeAlert();addEv('fall','Bantuan dikirim',(auto?'Hitung mundur habis. ':'')+'Notifikasi dan lokasi dikirim ke '+S.contacts.map(c=>c[0].split(' ')[0]).join(' dan ')+'.');toast('Bantuan dikirim ke kontak darurat')}
+
+/* activity */
+function act(){
+  const mx=Math.max(...S.week,1),d=['Sen','Sel','Rab','Kam','Jum','Sab','Min'];
+  $('#pAct').innerHTML=`<div class="card"><h3 style="font-size:15px">Peringatan minggu ini</h3><small style="color:var(--mute);font-size:11.5px">${S.week.reduce((a,b)=>a+b,0)} peringatan, terbanyak hari ${d[S.week.indexOf(mx)]}</small>
+  <div class="bars">${S.week.map((v,i)=>`<div><em class="${v===mx?'hi':''}" style="height:${8+v/mx*58}px"></em>${d[i]}</div>`).join('')}</div></div>
+  <div class="sec">Riwayat kejadian</div><div class="tl">${S.events.map(e=>`<div class="ev ${e.k}"><i>${e.t}</i><b>${e.b}</b><span>${e.d}</span></div>`).join('')}</div>`;
+}
+
+/* chat */
+const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const R=[[/pusing|lemas|sakit/i,'Minta Opa duduk dulu dan jangan langsung berdiri. Jika pusing disertai pandangan gelap atau nyeri dada, segera bawa ke IGD.'],[/tips|cegah|jatuh/i,'Pasang pegangan di kamar mandi, singkirkan karpet lepas, pastikan lampu terang, dan pakai alas kaki anti selip.'],[/kontrol|jadwal|dokter/i,'Kontrol berikutnya hari Kamis pukul 10.00 di Poli Geriatri. Saya ingatkan sehari sebelumnya.']];
+function chat(){
+  $('#pChat').innerHTML=`<div class="cnote">Ns. Sari, perawat keluarga. Balasan otomatis untuk demo.</div><div>${S.chat.map(c=>`<div class="bub ${c.me?'me':''}">${c.t}</div>`).join('')}</div><div class="chips">${['Opa pusing','Tips cegah jatuh','Jadwal kontrol'].map(x=>`<button class="chip">${x}</button>`).join('')}</div><div class="cin"><input id="ci" placeholder="Tulis pesan" aria-label="Pesan"><button class="cb" id="cs">Kirim</button></div>`;
+  document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>say(b.textContent));
+  $('#cs').onclick=()=>say($('#ci').value);$('#ci').onkeydown=e=>{if(e.key==='Enter')say($('#ci').value)};
+  $('#pChat').scrollTop=1e5;
+}
+function say(t){t=t.trim();if(!t)return;S.chat.push({me:1,t:esc(t)});chat();$('#ci').focus();
+  setTimeout(()=>{const r=R.find(x=>x[0].test(t));S.chat.push({me:0,t:r?r[1]:'Terima kasih, pesan sudah saya catat. Perawat akan membalas lebih rinci.'});chat()},900)}
+
+/* profile */
+function sw(id,on,t,s){return `<div class="row"><div>${t}<small>${s}</small></div><button class="sw ${on?'on':''}" id="${id}" role="switch" aria-checked="${on}" aria-label="${t}"></button></div>`}
+function prof(){
+  $('#pProf').innerHTML=`<div class="pf"><div class="av">${ini(S.user.name)}</div><h3>${S.user.name}</h3><small>${S.user.email}</small></div>
+  <div class="card"><div class="sec" style="margin-left:0">Data diri</div>
+    <label for="pn" style="margin-top:0">Nama</label><div class="field"><input id="pn" value="${S.user.name}"></div>
+    <label for="pp">Nomor telepon</label><div class="field"><input id="pp" value="${S.user.phone}" inputmode="tel"></div>
+    <button class="btn" id="save">Simpan perubahan</button></div>
+  <div class="card"><div class="sec" style="margin-left:0">Pengaturan deteksi</div>
+    ${sw('s1',S.auto,'Deteksi otomatis','Kirim peringatan tanpa menunggu konfirmasi')}
+    ${sw('s2',S.notif,'Notifikasi darurat','Suara dan getar saat ada insiden')}
+    ${sw('s3',S.dark,'Mode gelap','Tampilan nyaman untuk malam hari')}
+    <div class="row" style="display:block"><div>Sensitivitas sensor <b id="sv">${S.sens}%</b></div><input type="range" min="20" max="100" value="${S.sens}" id="sr" aria-label="Sensitivitas sensor"></div></div>
+  <div class="card"><div class="sec" style="margin-left:0">Kontak darurat</div>
+    ${S.contacts.map(c=>`<div class="row"><div class="ct"><div class="av">${ini(c[0])}</div><div>${c[0]}<small>${c[1]}</small></div></div></div>`).join('')}</div>
+  <button class="btn ghost" id="out">Keluar</button><div style="height:6px"></div>`;
+  $('#s1').onclick=e=>{S.auto=!S.auto;e.currentTarget.classList.toggle('on',S.auto);e.currentTarget.setAttribute('aria-checked',S.auto)};
+  $('#s2').onclick=e=>{S.notif=!S.notif;e.currentTarget.classList.toggle('on',S.notif);e.currentTarget.setAttribute('aria-checked',S.notif)};
+  $('#s3').onclick=e=>{S.dark=!S.dark;$('#phone').classList.toggle('dk',S.dark);e.currentTarget.classList.toggle('on',S.dark);e.currentTarget.setAttribute('aria-checked',S.dark)};
+  $('#sr').oninput=e=>{S.sens=+e.target.value;$('#sv').textContent=S.sens+'%'};
+  $('#save').onclick=()=>{const n=$('#pn').value.trim();if(n.length<2){toast('Nama minimal 2 huruf');return}
+    S.user.name=n;S.user.phone=$('#pp').value.trim();$('#who').textContent=n.split(' ')[0];$('#av1').textContent=ini(n);prof();toast('Perubahan disimpan')};
+  $('#out').onclick=()=>{clearInterval(timer);closeAlert();$('#app').classList.remove('on');$('#login').classList.add('on');$('#pw').value='';
+    document.querySelector('.nav button').click();toast('Anda telah keluar')};
+}
+let dp=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;$('#inst').style.display='block'});
+$('#inst').onclick=()=>{if(dp){dp.prompt();dp=null}};
+if('serviceWorker' in navigator&&location.protocol==='https:'&&!/claude\.(ai|com)/.test(location.host)){navigator.serviceWorker.register('sw.js').catch(()=>{})}
+</script>
+</body>
+</html>
